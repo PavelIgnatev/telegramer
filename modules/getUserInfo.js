@@ -1,5 +1,5 @@
 const getUserInfo = async (page) => {
-  const userInfo = await page.$(".chat-info-wrapper");
+  const userInfo = await page.waitForSelector(".chat-info-wrapper");
   await userInfo.click();
 
   let phone = "",

@@ -2,7 +2,7 @@ const { createPage } = require("./helpers/createPage");
 const { destroyBrowser } = require("./helpers/destroyBrowser");
 const { initialBrowser } = require("./helpers/initialBrowser");
 const { autoResponse } = require("./modules/autoResponse");
-const { getAllUsernames, updateAccount } = require("./db/account");
+const { getAllUsernames } = require("./db/account");
 const { default: axios } = require("axios");
 const { autoSender } = require("./modules/autoSender");
 const { disableTagRoleDialog } = require("./utils/disableTagRoleDialog");
@@ -13,7 +13,7 @@ const main = async (username) => {
     throw new Error("Произошла ошибка, username не был передан");
   }
 
-  const [context, browser] = await initialBrowser(true, username);
+  const [context, browser] = await initialBrowser(false, username);
   const page = await createPage(context, username);
 
   try {
@@ -32,21 +32,11 @@ const main = async (username) => {
     console.log(e.message);
   }
 
-  try {
-    const result = await axios.get(
-      "https://frigate-proxy.ru/ru/change_ip/af6e30706dee6cfc01e52d7b73944d60/998524"
-    );
-
-    console.log(result.data);
-
-    await page.waitForTimeout(10000);
-  } catch {
-    console.log("Ошибка при смене прокси");
-  }
+  await page.waitForTimeout(100000);
 
   try {
     await destroyBrowser(username, page, context, browser);
-    return
+    return;
   } catch {
     console.log('Ошибка при закрытии браузера "destroyBrowser"');
   }
@@ -70,11 +60,22 @@ const startMainLoop = async () => {
   while (true) {
     try {
       const usernames = await getAllUsernames();
-      // const shuffledUsernames = shuffleArray(usernames);
+
       console.log(usernames);
       for (const username of randomSort(usernames)) {
         try {
+          try {
+            const result = await axios.get(
+              "https://frigate-proxy.ru/ru/change_ip/82d68ac1341d35f48d503c735d9a6149/1014889"
+            );
+
+            console.log(result.data);
+          } catch {
+            console.log("Ошибка при смене прокси");
+          }
+          await new Promise((res) => setTimeout(res, 10000));
           console.log("Начинаю вход в аккаунт: ", username);
+
           await main(username);
         } catch (error) {
           console.error(

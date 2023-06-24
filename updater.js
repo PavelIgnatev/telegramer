@@ -1,7 +1,11 @@
 const { createPage } = require("./helpers/createPage");
 const { destroyBrowser } = require("./helpers/destroyBrowser");
 const { initialBrowser } = require("./helpers/initialBrowser");
-const { getAllUsernames } = require("./db/account");
+const {
+  getAllUsernames,
+  readAccounts,
+  deleteAccount,
+} = require("./db/account");
 const { scrollBottom } = require("./utils/scrollBottom");
 const { getUserInfo } = require("./modules/getUserInfo");
 const { getSentMessages } = require("./db/message");
@@ -80,4 +84,18 @@ const startMainLoop = async () => {
     }
   }
 };
-getSentMessages().then(e => console.log(e.length))
+// readAccounts().then((data) => {
+//   const currentDate = new Date();
+//   const currentDay = currentDate.getDate();
+//   let i = 0;
+
+//   data.forEach((data) => {
+//     const targetDay = new Date(data.remainingTime).getDate();
+//     if (targetDay !== currentDay) {
+//       deleteAccount(data.username)
+//     }
+//   });
+//   console.log(i);
+// });
+
+getAllUsernames().then((e) => e.forEach((k) => deleteAccount(k)));

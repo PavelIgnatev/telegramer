@@ -21,20 +21,24 @@ const searchByUsername = async (page, username) => {
       timeout: 5000,
     });
     await showMore.click();
-    await page.waitForTimeout(5000)
+    await page.waitForTimeout(5000);
   } catch {}
 
-  const searchElements = await page.$$(
-    `.ListItem.search-result:not(:has-text("subscribe")):not(:has-text("bot")) .handle:has-text("${username}")`
-  );
+  try {
+    const searchElements = await page.$$(
+      `.ListItem.search-result:not(:has-text("subscribe")):not(:has-text("bot")) .handle:has-text("${username}")`
+    );
 
-  for (const searchElement of searchElements) {
-    const innerText = await searchElement.textContent();
-    console.log(innerText.trim(), username);
-    if (innerText.trim() === username) {
-      await searchElement.click();
-      break;
+    for (const searchElement of searchElements) {
+      const innerText = await searchElement.textContent();
+      console.log(innerText.trim(), username);
+      if (innerText.trim() === username) {
+        await searchElement.click();
+        break;
+      }
     }
+  } catch {
+    console.log("Ошибка при клике");
   }
 };
 

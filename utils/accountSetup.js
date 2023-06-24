@@ -2,6 +2,7 @@ const { updateAccount, readAccount } = require("../db/account");
 const { getMyName } = require("../modules/getMyName");
 const { getRandomName } = require("./getRandomName");
 const { getRandomImageFromFolder } = require("./getRandomUrlImage");
+const { replaceRussianLetters } = require("./replaceRussianLetters");
 
 function containsEnglishAlphabet(str) {
   const regex = /[a-zA-Z1-9]/;
@@ -142,26 +143,31 @@ const accountSetup = async (page, accountId) => {
 
     await buttonSave?.click();
   } catch {}
-
-  await firstName?.fill(getRandomName(), { delay: 100 });
+  const nameRandom = getRandomName();
+  await firstName?.fill(nameRandom, { delay: 100 });
   await lastName?.fill("", { delay: 100 });
-  await bio?.fill(
-    "Разработал бота с ИИ для своего бизнеса, сделаю и для вашего @webgrow",
+  await bio?.fill("", { delay: 100 });
+  await userName?.fill(
+    `${replaceRussianLetters(nameRandom)}_${
+      Math.floor(Math.random() * 9e5) + 1e5
+    }`,
     { delay: 100 }
   );
 
   await page.waitForTimeout(5000);
 
   try {
-    const buttonSave = await page.$$('button[title="Save"]', {
+    const buttonSave = await page.waitForSelector('button[title="Save"]', {
       state: "attached",
       timeout: 5000,
     });
 
-    console.log(buttonSave.length);
-
     await buttonSave?.click();
-  } catch {}
+
+    await page.waitForTimeout(10000);
+  } catch (e) {
+    console.log(e);
+  }
 
   const buttonElements = await page?.$$('button[title="Go back"]');
 

@@ -63,14 +63,18 @@ class MessageService {
   async insertMessage(message) {
     await this.connect();
 
-    const existingMessage = await this.collection.findOne({
-      username: message.username,
-    });
-    if (existingMessage) {
-      return;
-    }
+    // const existingMessage = await this.collection.findOne({
+    //   username: message.username,
+    // });
+    // if (existingMessage) {
+    //   return;
+    // }
 
-    await this.collection.insertOne(message);
+    await this.collection.updateOne(
+      { username: message.username },
+      { $set: message },
+      { upsert: true }
+    );
   }
 
   // метод для обновления состояния отправки сообщения

@@ -78,7 +78,7 @@ const main = async (username) => {
   await page.waitForTimeout(40000);
 
   const result = await axios.get(
-    "https://frigate-proxy.ru/ru/change_ip/af6e30706dee6cfc01e52d7b73944d60/998524"
+    "https://frigate-proxy.ru/ru/change_ip/82d68ac1341d35f48d503c735d9a6149/1014889"
   );
 
   console.log(result.data);

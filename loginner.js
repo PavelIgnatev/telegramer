@@ -15,21 +15,8 @@ const main = async (username) => {
   try {
     await page.goto("https://web.telegram.org/a/");
     await page.pause();
-
   } catch (e) {
     console.log(e.message);
-  }
-
-  try {
-    const result = await axios.get(
-      "https://frigate-proxy.ru/ru/change_ip/af6e30706dee6cfc01e52d7b73944d60/998524"
-    );
-
-    console.log(result.data);
-
-    await page.waitForTimeout(10000);
-  } catch {
-    console.log("Ошибка при смене прокси");
   }
 
   try {
@@ -60,7 +47,18 @@ const startMainLoop = async () => {
 
     for (const username of randomSort(usernames)) {
       try {
+        try {
+          const result = await axios.get(
+            "https://frigate-proxy.ru/ru/change_ip/82d68ac1341d35f48d503c735d9a6149/1014889"
+          );
+
+          console.log(result.data);
+        } catch {
+          console.log("Ошибка при смене прокси");
+        }
+        await new Promise((res) => setTimeout(res, 10000));
         console.log("Начинаю вход в аккаунт: ", username);
+
         await main(username);
         console.log("Взод в аккаунт: ", username, " успешно завершен");
       } catch (error) {
@@ -70,7 +68,7 @@ const startMainLoop = async () => {
   } catch (e) {
     console.log(e.message, "ошибка в цикле");
   }
-  console.log('ВСЕ')
+  console.log("ВСЕ");
 };
 
 startMainLoop();
